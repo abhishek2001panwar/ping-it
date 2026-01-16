@@ -1,36 +1,223 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📌 Ping It - Context-Aware Reminder PWA
 
-## Getting Started
+A modern Progressive Web App (PWA) that provides **context-aware, one-time reminders** for daily tasks. Unlike traditional alarm apps, Ping It triggers reminders based on your **location and time context**, not just fixed schedules.
 
-First, run the development server:
+## ✨ Features
+
+- **Context-Based Reminders**: Set reminders for home, outside, morning, evening, or night
+- **Geolocation Detection**: Automatically detects when you're at home or away
+- **Smart Notifications**: Browser push notifications at the right time and place
+- **One-Time Reminders**: No recurring alarms - reminders auto-delete after triggering
+- **PWA Installation**: Install as a native-like app on mobile devices
+- **Dark/Light/System Theme**: Full theme support with smooth transitions
+- **Offline Support**: Works without internet connection
+- **Mobile-First Design**: Optimized for touch and mobile devices
+- **Privacy-Focused**: All data stored locally, no server required
+
+## 🚀 Tech Stack
+
+- **Frontend**: Next.js 16, React 19, TypeScript
+- **Styling**: Tailwind CSS 4
+- **Icons**: Lucide React
+- **Storage**: LocalStorage API
+- **APIs**: Geolocation API, Notification API, Service Worker API
+- **Deployment**: Vercel (recommended)
+
+## 📱 Use Cases
+
+1. **Bring Matchbox** - Reminds when at home in evening
+2. **Buy Milk** - Triggers when you leave home
+3. **Charge Phone** - Reminds at night before bed
+4. **Take Medicine** - Morning reminder at home
+5. **Carry ID Card** - Reminds when going outside
+6. **Fill Water Bottle** - Morning at home
+7. **Send Message** - Evening context reminder
+8. **Switch Off Gas** - When leaving home
+9. **Workout Reminder** - Evening one-time alert
+10. **Carry Charger** - When going outside
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+
+- Node.js 18+ installed
+- Modern browser (Chrome, Edge, Safari, Firefox)
+
+### Local Development
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📂 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+ping-it/
+├── app/                      # Next.js app directory
+│   ├── page.tsx             # Home page
+│   ├── reminders/page.tsx   # Reminders list
+│   ├── settings/page.tsx    # Settings page
+│   ├── layout.tsx           # Root layout
+│   └── globals.css          # Global styles
+├── components/              # React components
+│   ├── ui/                  # Base UI components
+│   │   ├── Button.tsx
+│   │   ├── Card.tsx
+│   │   ├── Input.tsx
+│   │   └── Modal.tsx
+│   ├── BottomNav.tsx        # Navigation bar
+│   ├── ContextSelector.tsx  # Context picker
+│   ├── CreateReminderModal.tsx
+│   ├── InstallPrompt.tsx    # PWA install banner
+│   ├── ReminderCard.tsx
+│   ├── ThemeToggle.tsx
+│   └── PWAInstaller.tsx
+├── contexts/                # React contexts
+│   ├── ThemeContext.tsx     # Theme management
+│   └── ReminderContext.tsx  # Reminder state
+├── lib/                     # Core utilities
+│   ├── types.ts             # TypeScript types
+│   ├── storage.ts           # LocalStorage manager
+│   ├── geolocation.ts       # Location services
+│   ├── context.ts           # Context detection
+│   ├── notifications.ts     # Notification handler
+│   └── pwa.ts              # PWA utilities
+├── public/                  # Static assets
+│   ├── manifest.json        # PWA manifest
+│   ├── sw.js               # Service worker
+│   ├── icon-192.svg
+│   └── icon-512.svg
+└── scripts/
+    └── generate_icons.py    # Icon generator
+```
 
-## Learn More
+## 🎨 Key Features Explained
 
-To learn more about Next.js, take a look at the following resources:
+### Context Detection
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The app detects five contexts:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Home**: Based on saved GPS location (within configurable radius)
+- **Outside**: When away from home location
+- **Morning**: 5 AM - 12 PM
+- **Evening**: 5 PM - 10 PM  
+- **Night**: 9 PM - 6 AM
 
-## Deploy on Vercel
+### Location Privacy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Location data is **never sent to any server**
+- Stored locally in browser LocalStorage
+- Only used for context detection
+- User can clear location anytime
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Notification System
+
+- Requires browser permission (one-time)
+- Checks reminders every 2 minutes
+- Auto-marks reminders as triggered
+- Vibration support on mobile devices
+
+### PWA Installation
+
+- Shows install prompt on first visit
+- Installable on iOS, Android, desktop
+- Works offline after installation
+- Appears in app drawer/home screen
+
+## 🌐 Deployment
+
+### Deploy to Vercel (Recommended)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+Or connect your GitHub repo to Vercel for automatic deployments.
+
+### Environment Setup
+
+No environment variables required - fully client-side!
+
+## 📱 PWA Testing
+
+### Test PWA locally:
+
+1. Build production version: `npm run build`
+2. Start server: `npm start`
+3. Open in browser
+4. Check DevTools > Application > Manifest
+5. Test "Add to Home Screen"
+
+### Requirements for PWA:
+
+- ✅ HTTPS (localhost works for testing)
+- ✅ Service Worker registered
+- ✅ Web App Manifest
+- ✅ Icons (192x192 and 512x512)
+- ✅ Installable criteria met
+
+## 🎯 Roadmap
+
+- [ ] Convert SVG icons to PNG for better compatibility
+- [ ] Add screenshot for PWA showcase
+- [ ] Battery level integration for "low battery" context
+- [ ] Voice input for creating reminders
+- [ ] Multiple home locations support
+- [ ] Reminder history and analytics
+- [ ] Export/import reminders
+- [ ] Widget support (when available in PWAs)
+
+## 🐛 Troubleshooting
+
+### Notifications not working?
+
+- Check browser notification permissions
+- Ensure site is served over HTTPS (or localhost)
+- Service Worker must be registered
+- Try in incognito mode to rule out extensions
+
+### Location not detected?
+
+- Enable browser location permission
+- Check device location services are on
+- Set home location in Settings first
+- Indoor locations may be less accurate
+
+### PWA not installing?
+
+- Must be served over HTTPS
+- Clear browser cache and retry
+- Check browser console for errors
+- Some browsers need multiple visits
+
+## 📄 License
+
+MIT License - feel free to use for personal or commercial projects.
+
+## 🤝 Contributing
+
+Contributions welcome! Please feel free to submit a Pull Request.
+
+## 👨‍💻 Author
+
+Built with ❤️ for better daily task management
+
+---
+
+**Note**: This is a client-side only PWA. No backend, no database, no user authentication required. Perfect for privacy-conscious users!
