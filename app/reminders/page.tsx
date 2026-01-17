@@ -153,7 +153,7 @@ function CreateReminderModalContent({ isOpen, onClose }: { isOpen: boolean; onCl
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">Context</label>
-              <ContextSelector value={context} onChange={setContext} />
+              <ContextSelector selected={context} onChange={setContext} />
             </div>
 
             <div className="space-y-2">

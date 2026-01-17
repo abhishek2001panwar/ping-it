@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -155,7 +156,7 @@ export default function HomePage() {
 function CreateReminderModalContent({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
-  const [context, setContext] = React.useState<any>('home');
+  const [context, setContext] = React.useState<string>('home');
   const [startTime, setStartTime] = React.useState('');
   const [endTime, setEndTime] = React.useState('');
   const { addReminder } = useReminders();
@@ -239,7 +240,7 @@ function CreateReminderModalContent({ isOpen, onClose }: { isOpen: boolean; onCl
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">Context</label>
-              <ContextSelector value={context} onChange={setContext} />
+              <ContextSelector selected={context} onChange={setContext} />
             </div>
 
             <div className="space-y-2">
