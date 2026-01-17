@@ -1,15 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Home, MapPin, Moon, Sun, Sunset } from 'lucide-react';
-import { ContextType } from '@/lib/types';
+import { ContextType, CustomLocation } from '@/lib/types';
+import { StorageManager } from '@/lib/storage';
 
 interface ContextSelectorProps {
   selected: ContextType;
   onChange: (context: ContextType) => void;
 }
 
-const contexts: { value: ContextType; label: string; icon: React.ReactNode; description: string }[] = [
+const defaultContexts: { value: ContextType; label: string; icon: React.ReactNode; description: string }[] = [
   {
     value: 'home',
     label: 'Home',
@@ -43,14 +44,32 @@ const contexts: { value: ContextType; label: string; icon: React.ReactNode; desc
 ];
 
 export function ContextSelector({ selected, onChange }: ContextSelectorProps) {
+  const [customLocations, setCustomLocations] = useState<CustomLocation[]>([]);
+
+  useEffect(() => {
+    const settings = StorageManager.getSettings();
+    setCustomLocations(settings.customLocations || []);
+  }, []);
+
+  const allContexts = [
+    ...defaultContexts,
+    ...customLocations.map(loc => ({
+      value: loc.id,
+      label: loc.name,
+      icon: <span className="text-2xl">{loc.icon || '📍'}</span>,
+      description: 'Custom location',
+    }))
+  ];
+
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-900 dark:text-white mb-3">
+      <label className="block text-sm font-medium text-gray-900 mb-3">
         Select Context
       </label>
       <div className="grid grid-cols-2 gap-3">
-        {contexts.map((context) => {
+        {allContexts.map((context) => {
           const isSelected = selected === context.value;
+          const customLoc = customLocations.find(loc => loc.id === context.value);
           
           return (
             <button
@@ -59,26 +78,32 @@ export function ContextSelector({ selected, onChange }: ContextSelectorProps) {
               onClick={() => onChange(context.value)}
               className={`p-4 rounded-2xl border-2 transition-all duration-300 ${
                 isSelected
-                  ? 'border-emerald-500 bg-emerald-50 dark:border-emerald-600 dark:from-emerald-950/30 dark:to-teal-950/30 shadow-md shadow-emerald-500/10'
-                  : 'border-zinc-200 dark:border-zinc-800 hover:border-emerald-300 dark:hover:border-emerald-700 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:shadow-sm'
+                  ? 'border-emerald-500 bg-emerald-50 shadow-md shadow-emerald-500/10'
+                  : 'border-zinc-200 hover:border-emerald-300 hover:bg-zinc-50 hover:shadow-sm'
               }`}
+              style={customLoc && isSelected ? { 
+                borderColor: customLoc.color,
+                backgroundColor: `${customLoc.color}15`
+              } : undefined}
             >
               <div className={`${
                 isSelected 
-                  ? 'text-emerald-600 dark:text-emerald-400' 
-                  : 'text-zinc-500 dark:text-zinc-400'
-              }`}>
+                  ? customLoc ? '' : 'text-emerald-600'
+                  : 'text-zinc-500'
+              }`}
+                style={customLoc && isSelected ? { color: customLoc.color } : undefined}
+              >
                 {context.icon}
               </div>
               <div className="mt-2 text-left">
                 <div className={`font-bold ${
                   isSelected 
-                    ? 'text-emerald-900 dark:text-emerald-100' 
-                    : 'text-zinc-900 dark:text-white'
+                    ? 'text-emerald-900' 
+                    : 'text-zinc-900'
                 }`}>
                   {context.label}
                 </div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                <div className="text-xs text-zinc-500 mt-1">
                   {context.description}
                 </div>
               </div>

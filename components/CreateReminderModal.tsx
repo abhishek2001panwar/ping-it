@@ -44,13 +44,13 @@ export function CreateReminderModal() {
 
   return (
     <>
-      <Button
+      <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-[88px] right-6 rounded-full w-14 h-14 shadow-2xl hover:shadow-emerald-500/50 z-[110] flex items-center justify-center p-0"
-        size="lg"
+        className="fixed bottom-24 right-6 w-16 h-16 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-xl hover:shadow-2xl hover:shadow-emerald-500/40 active:scale-95 transition-all duration-300 flex items-center justify-center"
+        style={{ zIndex: 110 }}
       >
-        <Plus className="w-7 h-7" />
-      </Button>
+        <Plus className="w-8 h-8" />
+      </button>
 
       <Modal
         isOpen={isOpen}
@@ -99,21 +99,20 @@ export function CreateReminderModal() {
             </div>
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <Button
+          <div className="flex gap-3 pt-6">
+            <button
               type="button"
-              variant="secondary"
               onClick={() => setIsOpen(false)}
-              className="flex-1"
+              className="flex-1 px-6 py-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-semibold transition-all duration-200 active:scale-95"
             >
               Cancel
-            </Button>
-            <Button
+            </button>
+            <button
               type="submit"
-              className="flex-1"
+              className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 transition-all duration-200 active:scale-95"
             >
               Create Reminder
-            </Button>
+            </button>
           </div>
         </form>
       </Modal>

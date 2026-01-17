@@ -5,25 +5,32 @@ import { MapPin, Bell, BellOff, Loader2, Check } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { CustomLocationManager } from '@/components/CustomLocationManager';
 import { StorageManager } from '@/lib/storage';
 import { GeolocationManager } from '@/lib/geolocation';
 import { NotificationManager } from '@/lib/notifications';
-import { Location } from '@/lib/types';
+import { Location, CustomLocation } from '@/lib/types';
 
 export default function SettingsPage() {
   const [homeLocation, setHomeLocation] = useState<Location | null>(null);
+  const [customLocations, setCustomLocations] = useState<CustomLocation[]>([]);
   const [radius, setRadius] = useState(100);
   const [isSettingLocation, setIsSettingLocation] = useState(false);
   const [notificationStatus, setNotificationStatus] = useState<'granted' | 'denied' | 'default'>('default');
 
-  useEffect(() => {
+  const loadSettings = () => {
     const settings = StorageManager.getSettings();
     setHomeLocation(StorageManager.getHomeLocation());
+    setCustomLocations(settings.customLocations || []);
     setRadius(settings.locationRadius);
     
     if ('Notification' in window) {
       setNotificationStatus(Notification.permission);
     }
+  };
+
+  useEffect(() => {
+    loadSettings();
   }, []);
 
   const setCurrentAsHome = async () => {
@@ -168,11 +175,17 @@ export default function SettingsPage() {
               className="w-full"
             />
             <p className="text-xs text-neutral-500 mt-1">
-              Reminders will trigger when you're within this distance from home
+              Reminders will trigger when you're within this distance from any location
             </p>
           </div>
         </CardContent>
       </Card>
+
+      {/* Custom Locations */}
+      <CustomLocationManager 
+        locations={customLocations}
+        onUpdate={loadSettings}
+      />
 
       <Card>
         <CardHeader>

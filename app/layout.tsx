@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReminderProvider } from "@/contexts/ReminderContext";
+import { ColorThemeProvider } from "@/contexts/ColorThemeContext";
 import { BottomNav } from "@/components/BottomNav";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { PWAInstaller } from "@/components/PWAInstaller";
@@ -42,14 +43,16 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icon-192.svg" />
       </head>
       <body className={`${inter.variable} font-sans antialiased min-h-screen`}>
-        <ReminderProvider>
-          <PWAInstaller />
-          <InstallPrompt />
-          <main className="pb-20 max-w-4xl mx-auto">
-            {children}
-          </main>
-          <BottomNav />
-        </ReminderProvider>
+        <ColorThemeProvider>
+          <ReminderProvider>
+            <PWAInstaller />
+            <InstallPrompt />
+            <main className="pb-20 max-w-4xl mx-auto">
+              {children}
+            </main>
+            <BottomNav />
+          </ReminderProvider>
+        </ColorThemeProvider>
       </body>
     </html>
   );

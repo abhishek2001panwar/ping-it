@@ -20,10 +20,12 @@ export class ContextDetector {
 
     // Location-based contexts
     try {
+      const currentLocation = await GeolocationManager.getCurrentPosition();
+      const settings = StorageManager.getSettings();
+      
+      // Check home location
       const homeLocation = StorageManager.getHomeLocation();
       if (homeLocation) {
-        const currentLocation = await GeolocationManager.getCurrentPosition();
-        const settings = StorageManager.getSettings();
         const isAtHome = GeolocationManager.isAtLocation(
           currentLocation,
           homeLocation,
@@ -32,9 +34,26 @@ export class ContextDetector {
 
         if (isAtHome) {
           contexts.push('home');
-        } else {
-          contexts.push('outside');
         }
+      }
+
+      // Check custom locations
+      let isAtAnyLocation = contexts.includes('home');
+      for (const customLoc of settings.customLocations) {
+        const isAtLocation = GeolocationManager.isAtLocation(
+          currentLocation,
+          customLoc.location,
+          settings.locationRadius
+        );
+        if (isAtLocation) {
+          contexts.push(customLoc.id);
+          isAtAnyLocation = true;
+        }
+      }
+
+      // Only add "outside" if not at any defined location
+      if (!isAtAnyLocation) {
+        contexts.push('outside');
       }
     } catch (error) {
       console.warn('Could not detect location-based context:', error);
